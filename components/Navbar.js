@@ -31,9 +31,23 @@ const Navbar = () => {
                 className='border h-10 m-3 p-3 w-50 md:w-100'
                 placeholder='search here'
                 value={animeSearch}
-                onChange={e => handleInput(e.target.value)}
+                onChange={e => {
+                  handleInput(e.target.value)}
+                }
+                onKeyDown={(e)=>{
+                  if(e.key == "Enter" && e.target.value.trim() != ""){
+                    router.push(`/search?q=${animeSearch}`)
+                    setAnimeSearch("")
+                  }
+                }
+                }
             />
-            <img src="search.svg" alt="" className='h-8'/>
+            <img src="search.svg" alt="" className='h-8 cursor-pointer' onClick={(e) => {
+              if(animeSearch.trim() != ""){
+                router.push(`/search?q=${animeSearch}`)
+                setAnimeSearch("")
+              }
+            }}/>
             <div className='absolute w-80 bg-black/90 top-16 flex flex-col gap-3 rounded-xl'>
               {
                 animeSearch!="" && animes && animes.map((item, ind) => {

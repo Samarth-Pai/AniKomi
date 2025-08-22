@@ -3,31 +3,39 @@ import React, { useEffect, useState } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import { Suspense } from 'react'
 
-const Seasonal = ({ prms }) => {
+const refetch = async (url) => {
+  let req = await fetch(url)
+  while(req.status != 200)
+    req = await fetch(url)
+  return req
+}
+
+const Search = ({ prms }) => {
     const params = useSearchParams();
-    const season = params.get("season");
-    const year = params.get("year");
+    const search = params.get("q");
     const [animes, setAnimes] = useState([])
-    const router = useRouter()  
-    const fadePosition = { summer: 1223 }
-    const seasonName = season[0].toUpperCase() + season.slice(1, season.length)
+    const router = useRouter()
     useEffect(() => {
         const getData = async () => {
-            const seasonReq = await fetch(`https://api.jikan.moe/v4/seasons/${year}/${season}`)
-            const seasonJson = await seasonReq.json()
-            setAnimes(seasonJson['data'])
+            setAnimes([])
+            console.log(search)
+            // const searchReq = await fetch(`https://api.jikan.moe/v4/anime?q=${search}`)
+            const searchReq = await refetch(`https://api.jikan.moe/v4/anime?q=${search}`)
+            const searchJson = await searchReq.json()
+            console.log("Keete")
+            setAnimes(searchJson['data'])
         }
         getData()
-    }, [])
+    }, [search])
 
     return (
         <>
             <div>
                 <div className='bgimage'>
-                    <img src={`${season}-bg.jpg`} className='w-[100%] h-[100%] object-cover object-center fixed' alt="" />
+                    <img src={`garden-school.jpg`} className='w-[100%] h-[100%] object-cover object-center fixed' alt="" />
                 </div>
                 <div className='px-[10vw] pb-3 text-3xl pt-20 font-bold relative'>
-                    {seasonName} {year}
+                    Search result for &quot;{search}&quot;
                 </div>
                 {/* <div className={`absolute top-[${fadePosition[season]}px] left-0 h-32 w-full bg-gradient-to-t from-black/80 to-transparent pointer-events-none z-0`} /> */}
                 <div className='cards flex flex-wrap gap-3 z-0 relative mx-10 justify-center mb-10'>
@@ -46,11 +54,11 @@ const Seasonal = ({ prms }) => {
     )
 }
 
-const SuspendedSeasonal = () => {
+const SuspendedSearch = () => {
     return (<Suspense>
-        <Seasonal />
+        <Search />
     </Suspense>
     )
 }
 
-export default SuspendedSeasonal
+export default SuspendedSearch

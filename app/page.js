@@ -92,7 +92,7 @@ export default function Home() {
     <>
       <Hero />
       {/* <Carousel/> */}
-      <div className="px-12">
+      <div className="px-3 md:px-12">
         <h1 className="text-2xl font-semibold">Top Airing</h1>
         <div className="flex gap-3 flex-wrap my-5 justify-center">
           {topAiring && topAiring.length && topAiring.map((item, ind) => {
@@ -101,7 +101,7 @@ export default function Home() {
                 <img src={item['images']['webp']['image_url']} className="h-full object-cover" />
                 <span className="absolute bottom-0 right-1 text-xl font-extrabold text-shadow-md text-shadow-amber-950">{item['score']}</span>
               </div>
-              <div>{item['title_english'] ? item['title_english'] : item['title']}</div>
+              <div className="text-sm text-white">{item['title_english'] ? item['title_english'] : item['title']}</div>
             </div>
           })}
         </div>
