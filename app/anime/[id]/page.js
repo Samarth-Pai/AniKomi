@@ -11,7 +11,7 @@ function sleep(time) {
 
 const capitalizeString = (s) => s && s[0].toUpperCase() + s.slice(1, s.length)
 
-const anime = ({ params }) => {
+const Anime = ({ params }) => {
     const [animeData, setAnimeData] = useState({})
     const [review, setReview] = useState("")
     const [relationships, setRelationships] = useState([])
@@ -164,4 +164,4 @@ const anime = ({ params }) => {
     )
 }
 
-export default anime
+export default Anime

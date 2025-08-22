@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useSearchParams } from 'next/navigation'
 
-const page = ( { params }) => {
+const Page = ( { params }) => {
     const [animes, setAnimes] = useState([])
     const router = useRouter()
     const demography = useSearchParams().get("name")
@@ -41,4 +41,4 @@ const page = ( { params }) => {
     )
 }
 
-export default page
+export default Page
