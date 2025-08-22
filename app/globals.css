@@ -24,3 +24,18 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+/* @keyframes example {
+  0%   {height: 0;}
+  50%  {height: 100px;}
+  100% {height: min-content;}
+} */
+
+@keyframes example {
+  0%   { max-height: 0; }
+  100% { max-height: 1000px; } /* Set to your maximum expected height */
+}
+
+.genresdiv{
+  animation-name: example;
+  animation-duration: 2s;
+}

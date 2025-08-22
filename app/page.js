@@ -1,103 +1,195 @@
+"use client"
+import Carousel from "@/components/Carousel";
+import Hero from "@/components/Hero";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+
+const refetch = async (url) => {
+  let req = await fetch(url)
+  while(req.status != 200)
+    req = await fetch(url)
+  return req
+}
+
 
 export default function Home() {
-  return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              app/page.js
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  const [topAiring, setTopAiring] = useState([])
+  const [topPopular, setTopPopular] = useState([])
+  const [genres, setGenres] = useState([])
+  const [seasons, setSeasons] = useState([])
+  const [themes, setThemes] = useState([])
+  const [demographics, setDemographics] = useState([])
+  const [showGenres, setShowGenres] = useState(false)
+  const [showSeasons, setShowSeasons] = useState(false)
+  const [showThemes, setShowThemes] = useState(false)
+  const [showDemographics, setShowDemographics] = useState(false)
+
+  useEffect(() => {
+    const getData = async () => {
+      let themesReq = await fetch("https://api.jikan.moe/v4/genres/anime?filter=themes")
+      let themesJson = await themesReq.json()
+      setThemes(themesJson['data'])
+    }
+    if(showThemes)
+      getData()
+  }, [showThemes])
+
+  useEffect(() => {
+    const getData = async () => {
+      let genresReq = await fetch("https://api.jikan.moe/v4/genres/anime")
+      let genresJson = await genresReq.json()
+      setGenres(genresJson['data'])
+    }
+    if(showGenres)
+      getData()
+  }, [showGenres])
+
+  useEffect(() => {
+    const getData = async () => {
+      let demographicsReq = await fetch("https://api.jikan.moe/v4/genres/anime?filter=demographics")
+      let demographicsJson = await demographicsReq.json()
+      console.log(setDemographics)
+      setDemographics(demographicsJson['data'])
+    }
+    if(showDemographics)
+      getData()
+  }, [showDemographics])
+
+  useEffect(() => {
+    const getData = async () => {
+      let seasonsReq = await fetch("https://api.jikan.moe/v4/seasons")
+      let seasonsJson = await seasonsReq.json()
+      setSeasons(seasonsJson['data'].slice(0, 20))
+    }
+    getData()
+  }, [showSeasons])
+
+  function sleep(time) {
+    return new Promise((resolve) => setTimeout(resolve, time));
+  }
+
+  useEffect(() => {
+    const getTopAiring = async () => {
+      let fetched = await fetch("https://api.jikan.moe/v4/top/anime?filter=airing&&limit=10");
+      let data = await fetched.json();
+      setTopAiring(data['data']);
+
+      await sleep(1000)
+
+      let topPopularReq = await fetch("https://api.jikan.moe/v4/top/anime?filter=bypopularity&limit=10");
+      let topPopularJson = await topPopularReq.json();
+      setTopPopular(topPopularJson['data']);
+    }
+    getTopAiring()
+  }, [])
+
+  const router = useRouter();
+
+
+  return (
+    <>
+      <Hero />
+      {/* <Carousel/> */}
+      <div className="px-12">
+        <h1 className="text-2xl font-semibold">Top Airing</h1>
+        <div className="flex gap-3 flex-wrap my-5 justify-center">
+          {topAiring && topAiring.length && topAiring.map((item, ind) => {
+            return <div key={ind} className="group border-1 rounded-xl border-white/40 p-3 w-40 md:w-60 cursor-pointer hover:border-4 hover:w-45 hover:md:w-65 hover:p-5 hover:bg-gradient-to-tr hover:from-blue-800/50 hover:to-yellow-800/50 transition-all" onClick={() => router.push(`anime/${item['mal_id']}`)}>
+              <div className="h-50 md:h-85 rounded-xl overflow-hidden relative group-hover:border-1">
+                <img src={item['images']['webp']['image_url']} className="h-full object-cover" />
+                <span className="absolute bottom-0 right-1 text-xl font-extrabold text-shadow-md text-shadow-amber-950">{item['score']}</span>
+              </div>
+              <div>{item['title_english'] ? item['title_english'] : item['title']}</div>
+            </div>
+          })}
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+
+        <h1 className="text-2xl font-semibold">Most Popular</h1>
+        <div className="flex gap-3 flex-wrap my-5 justify-center">
+          {topPopular && topPopular.length && topPopular.map((item, ind) => {
+            return <div key={ind} className="group border rounded-xl border-white/40 p-3 w-40 md:w-60 cursor-pointer hover:border-4 hover:w-45 hover:md:w-65 hover:p-5 hover:bg-gradient-to-tr hover:from-blue-800/50 hover:to-yellow-800/50 transition-all" onClick={() => router.push(`anime/${item['mal_id']}`)}>
+              <div className="h-50 md:h-85 rounded-xl overflow-hidden relative group-hover:border-1">
+                <img src={item['images']['webp']['image_url']} className="h-full object-cover" />
+                <span className="absolute bottom-0 right-1 text-xl font-extrabold text-shadow-md text-shadow-amber-950">{item['score']}</span>
+              </div>
+              <div>{item['title_english'] ? item['title_english'] : item['title']}</div>
+            </div>
+          })}
+        </div>
+
+
+        <div className="bg-blue-950 rounded-xl p-3 transition-all">
+          <div className="flex gap-3 justify-between cursor-pointer" onClick={() => setShowGenres(!showGenres)}>
+            <h1 className="text-xl text-blue-200">Genres</h1>
+            {showGenres ? <img src="/down-arrow.svg" /> : <img src="/up-arrow.svg" />}
+          </div>
+          {showGenres && (<div className="flex flex-wrap gap-2 justify-between">
+            {genres.length && genres.map((item, ind) => {
+              return <button key={ind} className="bg-blue-900 p-3 w-fit min-w-24 rounded-md text-blue-200" onClick={() => router.push(`genre/${item['mal_id']}?name=${item['name']}`)}>
+                {item.name}
+              </button>
+            })}
+          </div>)
+          }
+        </div>
+
+        <div className="bg-yellow-950 rounded-xl p-3 my-3 transition-all">
+          <div className="flex gap-3 justify-between cursor-pointer" onClick={() => setShowThemes(!showThemes)}>
+            <h1 className="text-xl text-yellow-200">Themes</h1>
+            {showThemes ? <img src="/down-arrow.svg" /> : <img src="/up-arrow.svg" />}
+          </div>
+          {showThemes && (<div className="flex flex-wrap gap-2 justify-between">
+            {themes.length && themes.map((item, ind) => {
+              return <button key={ind} className="bg-yellow-900 p-3 w-fit min-w-24 rounded-md text-yellow-200" onClick={() => router.push(`theme/${item['mal_id']}?name=${item['name']}`)}>
+                {item.name}
+              </button>
+            })}
+          </div>)
+          }
+        </div>
+
+        <div className="bg-yellow-950 rounded-xl p-3 my-3 transition-all">
+          <div className="flex gap-3 justify-between cursor-pointer" onClick={() => setShowDemographics(!showDemographics)}>
+            <h1 className="text-xl text-yellow-200">Demographics</h1>
+            {showDemographics ? <img src="/down-arrow.svg" /> : <img src="/up-arrow.svg" />}
+          </div>
+          {showDemographics && (<div className="flex flex-wrap gap-2 justify-between">
+            {demographics.length && demographics.map((item, ind) => {
+              return <button key={ind} className="bg-yellow-900 p-3 w-fit min-w-24 rounded-md text-yellow-200" onClick={() => router.push(`demography/${item['mal_id']}?name=${item['name']}`)}>
+                {item.name}
+              </button>
+            })}
+          </div>)
+          }
+        </div>
+
+
+        <div className="bg-green-950 rounded-xl p-3 my-3 transition-all">
+          <div className="flex gap-3 justify-between cursor-pointer" onClick={() => setShowSeasons(!showSeasons)}>
+            <h1 className="text-xl text-green-200">Seasons</h1>
+            {showSeasons ? <img src="/down-arrow.svg" /> : <img src="/up-arrow.svg" />}
+          </div>
+          <div className={"flex flex-wrap gap-2 justify-between overflow-hidden"}>
+            {showSeasons && seasons.length > 0 &&
+              seasons.flatMap((item) =>
+                item["seasons"].map((s, idx) => (
+                  <button
+                    key={`${item.year}-${s}`}
+                    className="bg-green-900 p-3 rounded-md text-green-200"
+                    onClick={() => router.push(`seasonal?year=${item.year}&season=${s}`)}
+                  >
+                    {item.year} - {s}
+                  </button>
+                ))
+              )
+            }
+          </div>
+        </div>
+      </div>
+    </>
   );
 }
+
+
