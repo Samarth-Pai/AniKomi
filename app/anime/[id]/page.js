@@ -29,7 +29,7 @@ const Anime = ({ params }) => {
 
             let relations = [];
             for (let otherAnime of animeJson['data']['relations']) {
-                if (["Prequel", "Sequal", "Side Story"].includes(otherAnime['relation'])) {
+                if (["Prequel", "Sequel", "Side Story"].includes(otherAnime['relation'])) {
                     const otherAnimeReq = await fetch(`https://api.jikan.moe/v4/anime/${otherAnime["entry"][0]["mal_id"]}/full`)
                     const otherAnimeJson = await otherAnimeReq.json()
                     otherAnimeJson['data']['howrelated'] = otherAnime['relation']
