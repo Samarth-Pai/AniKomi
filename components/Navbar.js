@@ -48,7 +48,7 @@ const Navbar = () => {
                 setAnimeSearch("")
               }
             }}/>
-            <div className='absolute w-80 bg-black/90 top-16 flex flex-col gap-3 rounded-xl'>
+            <div className='absolute w-80 md:w-130 bg-black/90 top-16 flex flex-col gap-3 rounded-xl'>
               {
                 animeSearch!="" && animes && animes.map((item, ind) => {
                   return <div key={ind} className='flex gap-2 rounded-xl p-3 cursor-pointer' onClick={() =>{

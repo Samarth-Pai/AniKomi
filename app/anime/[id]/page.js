@@ -70,7 +70,7 @@ const Anime = ({ params }) => {
                                 </div>
                                 <div className='flex flex-col w-full'>
                                     <div className='text-xl font-semibold'>
-                                        {item.howrelated}
+                                        {item.howrelated}   
                                     </div>
                                     <div className='overflow-ellipsis'>
                                         {item.title_english || item.title}

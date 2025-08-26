@@ -38,11 +38,11 @@ const Search = ({ prms }) => {
                     Search result for &quot;{search}&quot;
                 </div>
                 {/* <div className={`absolute top-[${fadePosition[season]}px] left-0 h-32 w-full bg-gradient-to-t from-black/80 to-transparent pointer-events-none z-0`} /> */}
-                <div className='cards flex flex-wrap gap-3 z-0 relative mx-10 justify-center mb-10'>
+                <div className='cards flex flex-wrap gap-3 z-0 relative mx-3 md:mx-10 justify-center mb-10'>
                     {animes && animes.length && animes.map((item, ind) => {
-                        return <div key={ind} className="border border-white/50 shadow-black rounded-xl p-3 w-60 cursor-pointer bg-black/50 backdrop-blur-2xl" onClick={() => router.push(`anime/${item['mal_id']}`)}>
-                            <div className="h-85 rounded-xl overflow-hidden relative">
-                                <img src={item['images']['webp']['image_url']} className="w-60 h-full object-cover" />
+                        return <div key={ind} className="group border border-white/50 shadow-black rounded-xl p-3 w-45 md:w-60 cursor-pointer bg-black/50 backdrop-blur-2xl hover:border-4 hover:w-45 hover:md:w-65 hover:p-5 hover:bg-gradient-to-tr hover:from-blue-800/50 hover:to-yellow-800/50 transition-all" onClick={() => router.push(`anime/${item['mal_id']}`)}>
+                            <div className="h-50 md:h-85 rounded-xl overflow-hidden relative group-hover:border-1">
+                                <img src={item['images']['webp']['image_url']} className="w-full h-full object-cover" />
                                 <span className="absolute bottom-0 right-1 text-xl font-extrabold text-shadow-md text-shadow-amber-950">{item['score']}</span>
                             </div>
                             <div>{item['title_english'] ? item['title_english'] : item['title']}</div>
