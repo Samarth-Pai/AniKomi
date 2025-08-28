@@ -34,7 +34,7 @@ const Seasonal = ({ prms }) => {
                     {animes && animes.length && animes.map((item, ind) => {
                         return <div key={ind} className="group border border-white/50 shadow-black rounded-xl p-3 w-40 md:w-60 cursor-pointer bg-black/50 backdrop-blur-2xl hover:border-4 hover:w-45 hover:md:w-65 hover:p-5 hover:bg-gradient-to-tr hover:from-blue-800/50 hover:to-yellow-800/50 transition-all" onClick={() => router.push(`anime/${item['mal_id']}`)}>
                             <div className="h-50 md:h-85 rounded-xl overflow-hidden relative group:border-1">
-                                <img src={item['images']['webp']['image_url']} className="h-full object-cover" />
+                                <img src={item['images']['webp']['image_url']} className="h-full object-cover" />n
                                 <span className="absolute bottom-0 right-1 text-xl font-extrabold text-shadow-md text-shadow-amber-950">{item['score']}</span>
                             </div>
                             <div>{item['title_english'] ? item['title_english'] : item['title']}</div>

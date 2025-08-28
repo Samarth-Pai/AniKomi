@@ -3,7 +3,7 @@ import Carousel from "@/components/Carousel";
 import Hero from "@/components/Hero";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 
 const refetch = async (url) => {
   let req = await fetch(url)
