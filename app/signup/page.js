@@ -111,7 +111,7 @@ const Signup = () => {
                             <span>Or</span>
                             <span className='h-[1px] w-full bg-white/50'></span>
                         </div>
-                        <button onClick={()=>signIn()} className='bg-yellow-800/50 p-3 rounded-xl flex justify-between'>
+                        <button onClick={()=>signIn("google")} className='bg-yellow-800/50 p-3 rounded-xl flex justify-between'>
                             <span className='flex justify-center items-center gap-3 w-30'>
                                 <Image width={35} height={35} src='/google.webp' alt='Google logo'></Image>
                                 <span className='h-full bg-white w-[1px]'></span>
