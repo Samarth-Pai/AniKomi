@@ -129,7 +129,7 @@ export const authOptions = {
         
         const myHeaders2 = new Headers();
         console.log(credentials)
-        myHeaders2.append("usernamemail", credentials.usernameEmail);
+        myHeaders2.append("usernameemail", credentials.usernameEmail);
         myHeaders2.append("password", credentials.password);
         
         // const requestOptions2 = {
@@ -138,14 +138,8 @@ export const authOptions = {
         //   redirect: "follow"
         // };
         const requestOptions = {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                usernameEmail,
-                password,
-            }),
+            method: "GET",
+            headers: myHeaders2,
             redirect: "follow"
         };
         

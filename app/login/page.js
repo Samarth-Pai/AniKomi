@@ -8,7 +8,6 @@ import { useSearchParams } from 'next/navigation'
 const Signup = () => {
     const router = useRouter();
     const params = useSearchParams();
-    const confirmUsername = params.get("confirmUsername")
     const [usernameEmail, setUsernameEmail] = useState("")
     const [password, setPassword] = useState("")
     const { data: session, status } = useSession();
@@ -42,7 +41,7 @@ const Signup = () => {
     const signInManually = async (e) => {
         // console.log("gonna sign in manually")
         // const requestOptions = {
-        //     method: "POST",
+        //     method: "GET",
         //     headers: {
         //         "Content-Type": "application/json",
         //     },
@@ -68,12 +67,11 @@ const Signup = () => {
         // else {
         //     console.log("Not found")
         // }
-
-            await signIn("login", {
+        await signIn("login", {
                 redirect: false,
                 usernameEmail,
                 password,
-            })
+        })
     }
 
 
@@ -88,12 +86,12 @@ const Signup = () => {
                         Sign in
                     </h1>
                     <div className='flex gap-3 justify-between'>
-                        <input disabled onChange={(e) => setUsernameEmail(e.target.value)} value={usernameEmail} className='p-3 border-1 w-full rounded-xl' name="usernameEmail" id="usernameEmail" placeholder='Enter your username/password' />
+                        <input onChange={(e) => setUsernameEmail(e.target.value)} value={usernameEmail} className='p-3 border-1 w-full rounded-xl' name="usernameEmail" id="usernameEmail" placeholder='Enter your username/password' />
                     </div>
                     <div className='flex gap-3 justify-between'>
-                        <input disabled onChange={(e) => setPassword(e.target.value)} value={password} className='p-3 border-1 w-full rounded-xl' name="password" id="password" placeholder='Enter password' />
+                        <input onChange={(e) => setPassword(e.target.value)} value={password} className='p-3 border-1 w-full rounded-xl' name="password" id="password" placeholder='Enter password' />
                     </div>
-                    <button onClick={signInManually} className='bg-yellow-800/50 p-3 rounded-xl' disabled>
+                    <button onClick={signInManually} className='bg-yellow-800/50 p-3 rounded-xl'>
                         <span className='text-yellow-100/70'>Sign in</span>
                     </button>
                     <div className='w-full flex justify-center items-center gap-3'>
