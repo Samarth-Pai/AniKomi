@@ -1,6 +1,7 @@
 import { Geist, Geist_Mono, Saira } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
+import SessionWrapper from "@/app/component/SessionWrapper";
  
 
 const geistSans = Geist({
@@ -25,13 +26,15 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
+    <html lang="en" className="dark">
+      <SessionWrapper>
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${saira.className} antialiased tracking-wider bg-black text-white`}
         >
         <Navbar/>
           {children}
       </body>
+      </SessionWrapper>
     </html>
   );
 }

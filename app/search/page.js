@@ -30,7 +30,6 @@ const Search = ({ prms }) => {
 
     return (
         <>
-            <div>
                 <div className='bgimage'>
                     <img src={`garden-school.jpg`} className='w-[100%] h-[100%] object-cover object-center fixed' alt="" />
                 </div>
@@ -49,7 +48,6 @@ const Search = ({ prms }) => {
                         </div>
                     })}
                 </div>
-            </div>
         </>
     )
 }

@@ -38,7 +38,7 @@ export default function Home() {
 
   useEffect(() => {
     const getData = async () => {
-      let genresReq = await fetch("https://api.jikan.moe/v4/genres/anime")
+      let genresReq = await fetch("https://api.jikan.moe/v4/genres/anime?filter=genres")
       let genresJson = await genresReq.json()
       setGenres(genresJson['data'])
     }
