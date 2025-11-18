@@ -6,6 +6,7 @@ import EmailProvider from 'next-auth/providers/email'
 import GithubProvider from 'next-auth/providers/github'
 import clientPromise from '@/app/lib/mongodb'
 import CredentialsProvider from 'next-auth/providers/credentials'
+import { headers } from 'next/headers'
 
 const createUserOauth = async (userDict) => {
   const username = userDict.name.replace(" ", "_").toLowerCase()
