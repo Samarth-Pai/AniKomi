@@ -16,7 +16,9 @@ const Profile = ({ params }) => {
       redirect: "follow"
     };
 
-    const req = await fetch(baseUrl + "api/getUserFromUsername", requestOptions);
+    const baseUrl = `${window.location.protocol}//${window.location.host}`
+    console.log(baseUrl)
+    const req = await fetch(baseUrl + "/api/getUserFromUsername", requestOptions);
     console.log("Dta", req)
     const data = await req.json();
     setuserInfo(data);
