@@ -32,9 +32,10 @@ const Anime = ({ params }) => {
             const animeJson = await animeReq.json()
             setAnimeData(animeJson)
 
-            const reviewReq = await fetch("/api/aireview?" + new URLSearchParams({ title: animeJson['data']['title_english'] || animeJson['data']['title'] }))
-            const reviewJson = await reviewReq.json()
-            setReview(reviewJson['message'])
+            const addedAnimeReq = await fetch(`/api/addedAnime/${id}`)
+            const addedAnimeJson = await addedAnimeReq.json();
+            console.log("Added anime", addedAnimeJson)
+            setAdded(addedAnimeJson.message);
 
             let relations = [];
             for (let otherAnime of animeJson['data']['relations']) {
@@ -43,16 +44,16 @@ const Anime = ({ params }) => {
                     const otherAnimeJson = await otherAnimeReq.json()
                     otherAnimeJson['data']['howrelated'] = otherAnime['relation']
                     relations.push(otherAnimeJson['data'])
-                    // await sleep(1000)
+                    await sleep(200)
                 }
             }
             console.log(relations)
             setRelationships(relations);
+            await sleep(1500)
 
-            const addedAnimeReq = await fetch(`/api/addedAnime/${id}`)
-            const addedAnimeJson = await addedAnimeReq.json();
-            console.log("Added anime", addedAnimeJson)
-            setAdded(addedAnimeJson.message);
+            const reviewReq = await fetch("/api/aireview?" + new URLSearchParams({ title: animeJson['data']['title_english'] || animeJson['data']['title'] , id}))
+            const reviewJson = await reviewReq.json()
+            setReview(reviewJson['message'])
         }
         getData()
     }, [])
