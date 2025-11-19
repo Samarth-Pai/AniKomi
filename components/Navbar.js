@@ -45,7 +45,7 @@ const Navbar = () => {
 
 
   return (
-    <nav className='flex justify-between items-center border-b px-3 fixed z-10 w-full backdrop-blur-2xl bg-amber-950/50'>
+    <nav className='flex justify-between items-center border-b px-2 md:px-3 fixed z-10 w-full backdrop-blur-2xl bg-amber-950/50'>
         <div>
             <h1 className='text-xl md:text-4xl font-bold font-giest-mono cursor-pointer' onClick={()=>router.push("/")}>
                 AniKomi
@@ -54,7 +54,7 @@ const Navbar = () => {
         <div className='flex justify-center items-center relative'>
             <input
                 type="text"
-                className='border h-10 m-3 p-3 w-50 md:w-100'
+                className='border h-10 mx-1 my-2 md:mx-3 md:my-3 p-3 w-40 md:w-100'
                 placeholder='search here'
                 value={animeSearch}
                 onChange={e => {
@@ -68,7 +68,7 @@ const Navbar = () => {
                 }
                 }
             />
-            <img src="search.svg" alt="" className='h-8 cursor-pointer' onClick={(e) => {
+            <img src="search.svg" alt="" className='h-8 cursor-pointer hidden md:inline' onClick={(e) => {
               if(animeSearch.trim() != ""){
                 router.push(`/search?q=${animeSearch}`)
                 setAnimeSearch("")
@@ -125,10 +125,10 @@ const Navbar = () => {
             </div>
               
             </>:<>
-            <button className='p-2 m-2 border border-white/50 bg-black/50 rounded-xl backdrop-blur-sm cursor-pointer hover:p-3 hover:border-3 hover:bg-gradient-to-tr hover:from-blue-800/50 hover:to-yellow-800/50 transition-all' onClick={()=>router.push("/signup")}>
+            <button className='p-1 md:p-2 m-1 md:m-2 border border-white/50 bg-black/50 rounded-md md:rounded-xl backdrop-blur-sm cursor-pointer md:hover:p-3 md:hover:border-3 hover:bg-gradient-to-tr hover:from-blue-800/50 hover:to-yellow-800/50 transition-all text-sm' onClick={()=>router.push("/signup")}>
               Signup
             </button>
-            <button className='p-2 m-2 border border-white/50 bg-black/50 rounded-xl backdrop-blur-sm cursor-pointer hover:p-3 hover:border-3 hover:bg-gradient-to-tr hover:from-blue-800/50 hover:to-yellow-800/50 transition-all' onClick={()=>router.push("/login")}>
+            <button className='p-1 md:p-2 m-1 md:m-2 border border-white/50 bg-black/50 rounded-md md:rounded-xl backdrop-blur-sm cursor-pointer md:hover:p-3 md:hover:border-3 hover:bg-gradient-to-tr hover:from-blue-800/50 hover:to-yellow-800/50 transition-all text-sm' onClick={()=>router.push("/login")}>
               Login
             </button>
           </>}
