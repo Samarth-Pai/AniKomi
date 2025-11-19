@@ -124,14 +124,15 @@ const Navbar = () => {
                 }
             </div>
               
-            </>:<>
-            <button className='p-1 md:p-2 m-1 md:m-2 border border-white/50 bg-black/50 rounded-md md:rounded-xl backdrop-blur-sm cursor-pointer md:hover:p-3 md:hover:border-3 hover:bg-gradient-to-tr hover:from-blue-800/50 hover:to-yellow-800/50 transition-all text-sm' onClick={()=>router.push("/signup")}>
-              Signup
-            </button>
-            <button className='p-1 md:p-2 m-1 md:m-2 border border-white/50 bg-black/50 rounded-md md:rounded-xl backdrop-blur-sm cursor-pointer md:hover:p-3 md:hover:border-3 hover:bg-gradient-to-tr hover:from-blue-800/50 hover:to-yellow-800/50 transition-all text-sm' onClick={()=>router.push("/login")}>
-              Login
-            </button>
-          </>}
+            </>:<div className='flex gap-2 m-3'>
+              
+              <button className='p-1 md:p-2 border border-white/50 bg-black/50 rounded-md md:rounded-xl backdrop-blur-sm cursor-pointer md:hover:p-3 md:hover:border-3 hover:bg-gradient-to-tr hover:from-blue-800/50 hover:to-yellow-800/50 transition-all text-sm' onClick={()=>router.push("/signup")}>
+                Signup
+              </button>
+              <button className='p-1 md:p-2 border border-white/50 bg-black/50 rounded-md md:rounded-xl backdrop-blur-sm cursor-pointer md:hover:p-3 md:hover:border-3 hover:bg-gradient-to-tr hover:from-blue-800/50 hover:to-yellow-800/50 transition-all text-sm' onClick={()=>router.push("/login")}>
+                Login
+              </button>
+            </div>}
         </div>
     </nav>
   )
