@@ -55,7 +55,7 @@ const Navbar = () => {
       <div className='flex justify-center items-center relative'>
         <input
           type="text"
-          className='border h-10 mx-1 my-2 md:mx-3 md:my-3 p-3 w-40 md:w-100'
+          className='border h-10 mx-1 my-2 md:mx-3 md:my-3 p-3 w-50 md:w-100'
           placeholder='search here'
           value={animeSearch}
           onChange={e => {
