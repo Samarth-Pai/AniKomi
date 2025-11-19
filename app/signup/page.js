@@ -117,16 +117,16 @@ const Signup = () => {
             </div>
             <div className='flex justify-center items-center h-[100vh]'>
                 <form onSubmit={handleSignup} method='POST'>
-                    <div className='w-120 border-1 backdrop-blur-2xl bg-black/50 rounded-xl flex flex-col z-1 gap-3 justify-around p-4'>
+                    <div className='w-80 md:w-120 border-1 backdrop-blur-2xl bg-black/50 rounded-xl flex flex-col z-1 gap-3 justify-around p-4'>
                         <h1 className='text-3xl'>
                             Signup
                         </h1>
                         <input onChange={e=>setEmail(e.target.value)} className='p-3 border-1 rounded-xl' type="email" name="email" id="email" placeholder='Enter your email' />
-                        <div className='flex gap-3 justify-between'>
+                        <div className='flex flex-col md:flex-row gap-3 justify-between'>
                             <input onChange={e=>setUsername(e.target.value)} className='p-3 border-1 w-full rounded-xl' type="text" name="username" id="username" placeholder='Enter your username' />
                             <input onChange={e=>setName(e.target.value)} className='p-3 border-1 w-full rounded-xl' type="text" name="name" id="name" placeholder='Enter your name' />
                         </div>
-                        <div className='flex gap-3 justify-between'>
+                        <div className='flex flex-col md:flex-row gap-3 justify-between'>
                             <input onChange={e=>setPassword(e.target.value)} className='p-3 border-1 w-full rounded-xl' type="password" name="password" id="password" placeholder='Enter password' />
                             <input onChange={e=>setConfirmPassword(e.target.value)} className='p-3 border-1 w-full rounded-xl' type="password" name="confirmPassword" id="confirmPassword" placeholder='Enter confirm password' />
                         </div>
