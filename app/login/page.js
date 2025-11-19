@@ -85,7 +85,7 @@ const Signup = () => {
                 <img src="/shrine.jpg" className='w-[100%] h-[100%] object-cover object-center fixed' alt="" />
             </div>
             <div className='flex justify-center items-center h-[100vh]'>
-                <div className='w-120 border-1 backdrop-blur-2xl bg-black/50 rounded-xl flex flex-col z-1 gap-3 justify-around p-4'>
+                <div className='w-80 md:w-120 border-1 backdrop-blur-2xl bg-black/50 rounded-xl flex flex-col z-1 gap-3 justify-around p-4'>
                     <h1 className='text-3xl'>
                         Sign in
                     </h1>
