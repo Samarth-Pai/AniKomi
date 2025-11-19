@@ -151,7 +151,7 @@ export const authOptions = {
         const userPasswordExists = await userPasswordExistsReq.json();
         console.log("Done echking")
         console.log("show: ", userPasswordExists)
-        if(userPasswordExists.message){
+        if(userPasswordExists.message && !userPasswordExists.oauth){
           console.log("Found it seems...")
           const myHeaders = new Headers();
           myHeaders.append("email", userPasswordExists.email);

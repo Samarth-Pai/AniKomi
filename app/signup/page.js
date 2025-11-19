@@ -31,11 +31,18 @@ const Signup = () => {
         console.log("hBhaava")
         e.preventDefault()
 
+        if(!email || !name || !username || !password || !confirmPassword){
+            setErrorMessage("Fill all the fields!")
+            return;
+        }
+
+        if(password != confirmPassword){
+            setErrorMessage("Password doesn't match with Confirm Password");
+            return;
+        }
+
         const myHeaders = new Headers()
-        myHeaders.append("name", name)
-        myHeaders.append("username", username)
-        myHeaders.append("email", email)
-        myHeaders.append("password", password)
+        myHeaders.append("usernameemail", email)
 
         const userExistsReq = await fetch("/api/userExists", {
             method: 'GET',
@@ -45,9 +52,26 @@ const Signup = () => {
 
         const userExistsJson = await userExistsReq.json();
         if(userExistsJson.message){
-            setErrorMessage("User already exists")
+            setErrorMessage("User email exists")
             return
         }
+
+        const myHeaders2 = new Headers()
+        myHeaders2.append("usernameemail", username)
+
+        const userExistsReq2 = await fetch("/api/userExists", {
+            method: 'GET',
+            headers: myHeaders2,
+            redirect: 'follow'
+        })
+        console.log("Username", username)
+
+        const userExistsJson2 = await userExistsReq2.json();
+        if(userExistsJson2.message){
+            setErrorMessage("User with same username exists")
+            return
+        }
+
 
         // First, register the user via API
         const signupRes = await fetch('/api/addUser', {
@@ -71,7 +95,7 @@ const Signup = () => {
         // Then, sign in the user
         const res = await signIn("login", {
             redirect: false,
-            email,
+            usernameEmail: email,
             password,
         })
         console.log(res)
@@ -80,6 +104,9 @@ const Signup = () => {
 
         if (res?.ok) {
             router.push("/")
+        }
+        else{
+            router
         }
     }
     
@@ -103,6 +130,9 @@ const Signup = () => {
                             <input onChange={e=>setPassword(e.target.value)} className='p-3 border-1 w-full rounded-xl' type="password" name="password" id="password" placeholder='Enter password' />
                             <input onChange={e=>setConfirmPassword(e.target.value)} className='p-3 border-1 w-full rounded-xl' type="password" name="confirmPassword" id="confirmPassword" placeholder='Enter confirm password' />
                         </div>
+                        { errorMessage && <div className='text-sm text-red-500 border rounded-md p-1'>
+                            {errorMessage}
+                        </div>}
                         <button type='submit' className='bg-yellow-800/50 p-3 rounded-xl'>
                             <span className='text-yellow-100/70'>Sign Up</span>
                         </button>

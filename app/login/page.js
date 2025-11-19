@@ -10,6 +10,7 @@ const Signup = () => {
     const params = useSearchParams();
     const [usernameEmail, setUsernameEmail] = useState("")
     const [password, setPassword] = useState("")
+    const [errorMessage, setErrorMessage] = useState("")
     const { data: session, status } = useSession();
 
 
@@ -67,11 +68,14 @@ const Signup = () => {
         // else {
         //     console.log("Not found")
         // }
-        await signIn("login", {
+        const res = await signIn("login", {
                 redirect: false,
                 usernameEmail,
                 password,
         })
+        if(!res?.ok){
+            setErrorMessage("Invalid credentials")
+        }
     }
 
 
@@ -91,6 +95,9 @@ const Signup = () => {
                     <div className='flex gap-3 justify-between'>
                         <input onChange={(e) => setPassword(e.target.value)} value={password} className='p-3 border-1 w-full rounded-xl' name="password" id="password" placeholder='Enter password' />
                     </div>
+                    { errorMessage && <div className='text-sm text-red-500 border rounded-md p-1'>
+                            {errorMessage}
+                    </div>}
                     <button onClick={signInManually} className='bg-yellow-800/50 p-3 rounded-xl'>
                         <span className='text-yellow-100/70'>Sign in</span>
                     </button>
