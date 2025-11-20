@@ -140,7 +140,7 @@ export async function recommendAnime(watched) {
     let addedCount = 0;
 
     for (const anime of animeList) {
-      if (addedCount >= 5) break;
+      if (addedCount >= 7) break;
 
       const malId = anime.mal_id;
 
@@ -150,7 +150,7 @@ export async function recommendAnime(watched) {
         addedCount++;
 
         // Stop EVERYTHING once we reach 25
-        if (recommended.size >= 25) {
+        if (recommended.size >= 28) {
           return [...recommended];
         }
       }
@@ -168,12 +168,15 @@ export async function POST(request) {
   for (const id of recc) {
     let req = await fetch(`https://api.jikan.moe/v4/anime/${id}`)
     let reqJson = await req.json()
-    while(!("data" in reqJson)){
-      req = await fetch(`https://api.jikan.moe/v4/anime/${id}`)
-      reqJson = await req.json()
-    }
-    recommendedInfoes.push(reqJson['data'])
-    // await new Promise(resolve => setTimeout(resolve, 600))
+    // while(!("data" in reqJson)){
+    //   req = await fetch(`https://api.jikan.moe/v4/anime/${id}`)
+    //   reqJson = await req.json()
+    // }
+    if('data' in reqJson)
+      recommendedInfoes.push(reqJson['data'])
+    await new Promise(resolve => setTimeout(resolve, 500))
   }
+  // console.log("Recommended infoes", recommendedInfoes)
+  console.log("Recommended length", recommendedInfoes.length)
   return Response.json({ message: recommendedInfoes, error: false, success: true });
 }
