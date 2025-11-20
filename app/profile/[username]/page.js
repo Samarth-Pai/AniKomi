@@ -76,16 +76,8 @@ const Profile = ({ params }) => {
         body: JSON.stringify(watchedList),
       });
       const reccJson = await reccReq.json();
-      const recc = reccJson.message;
-      console.log("These will be recc", recc)
-      let recommendedInfoes = [];
-      for (const id of recc) {
-        const req = await fetch(`https://api.jikan.moe/v4/anime/${id}`)
-        const reqJson = await req.json()
-        if ("data" in reqJson)
-          recommendedInfoes.push(reqJson['data'])
-        await new Promise(resolve => setTimeout(resolve, 1800))
-      }
+      const recommendedInfoes = reccJson.message;
+      console.log("These will be recc", recommendedInfoes)
       setRecommendations(recommendedInfoes)
     }
     if (recommendationMode)
@@ -120,10 +112,14 @@ const Profile = ({ params }) => {
               </span>
             </div>
           </div>
-          {watched.length && myself && <button className='p-3 w-fit bg-black/40 rounded-md' disabled={recommendationMode} onClick={()=>setRecommendationMode(true)}>
+          {/* {watched.length && myself && <button className='p-3 w-fit bg-black/40 rounded-md' disabled={recommendationMode} onClick={()=>setRecommendationMode(true)}>
             Get recommendation
-          </button>
-      }
+          </button> */}
+          {recommendationMode ? <button className='p-3 w-fit bg-black/40 rounded-md text-gray-500' disabled={recommendationMode}>
+            Get recommendation
+          </button> : <button className='p-3 w-fit bg-black/40 rounded-md' onClick={()=>setRecommendationMode(true)}>
+            Get recommendation
+          </button>}
         </div>
         <div className="flex w-full">
           <div className='flex w-full m-2 p-3 bg-black/45 backdrop-blur-md rounded-md flex-col'>

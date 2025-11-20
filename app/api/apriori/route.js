@@ -69,26 +69,26 @@ class Apriori {
 }
 
 async function fetchAllAnimeByGenres(genres) {
-    const allAnime = [];
-    const genreParam = genres.join(",");
-    let page = 1;
+  const allAnime = [];
+  const genreParam = genres.join(",");
+  let page = 1;
 
-    while (true) {
-        const url = `https://api.jikan.moe/v4/anime?genres=${genreParam}&sort=desc&page=${page}&limit=25`;
-        const res = await fetch(url);
-        // await new Promise(resolve => setTimeout(resolve, 400));
-        const data = await res.json();
+  while (true) {
+    const url = `https://api.jikan.moe/v4/anime?genres=${genreParam}&order_by=popularity&page=${page}&limit=25`;
+    const res = await fetch(url);
+    // await new Promise(resolve => setTimeout(resolve, 400));
+    const data = await res.json();
 
-        if (!data.data || data.data.length === 0) break;
+    if (!data.data || data.data.length === 0) break;
 
-        allAnime.push(...data.data);
+    allAnime.push(...data.data);
 
-        if (!data.pagination?.has_next_page) break;
+    if (!data.pagination?.has_next_page) break;
 
-        page++;
-    }
+    page++;
+  }
 
-    return allAnime;
+  return allAnime;
 }
 
 
@@ -97,60 +97,83 @@ async function fetchAllAnimeByGenres(genres) {
 // =========================
 export async function recommendAnime(watched) {
 
-    // Step 1: Prepare transactions
-    const transactions = Object.values(watched);
+  // Step 1: Prepare transactions
+  const transactions = Object.values(watched);
+  const txnCount = transactions.length;
 
-    // Step 2: Run Apriori
-    const apriori = new Apriori(0.3);
-    const { itemsets } = await apriori.exec(transactions);
+  // Keep noisy tiny histories strict and loosen as evidence grows.
+  const pickMinSupport = (count) => {
+    if (count <= 10) return 0.25;
+    if (count <= 25) return 0.3;
+    if (count <= 50) return 0.4;
+    if (count <= 100) return 0.5;
+    return 0.6
+  };
+  const dynamicSupport = pickMinSupport(txnCount);
 
-    // Step 3: Sort itemsets (bigger → smaller, then support)
-    itemsets.sort((a, b) => {
-        if (b.items.length !== a.items.length)
-            return b.items.length - a.items.length;
-        return b.support - a.support;
-    });
+  // Step 2: Run Apriori
+  const apriori = new Apriori(dynamicSupport);
+  const { itemsets } = await apriori.exec(transactions);
+
+  // Step 3: Sort itemsets (bigger → smaller, then support)
+  itemsets.sort((a, b) => {
+    if (b.items.length !== a.items.length)
+      return b.items.length - a.items.length;
+    return b.support - a.support;
+  });
+  console.log("Frequent itemsets: ", itemsets)
 
 
-    // Step 4: Setup sets
-    console.log("These are watched", watched)
-    const watchedAndRecommended = new Set(Object.keys(watched).map(Number));
-    const recommended = new Set();
+  // Step 4: Setup sets
+  console.log("These are watched", watched)
+  const watchedAndRecommended = new Set(Object.keys(watched).map(Number));
+  const recommended = new Set();
 
 
-    // Step 5: Iterate sorted itemsets
-    for (const set of itemsets) {
-        const genres = set.items;     // e.g. [1, 46]
+  // Step 5: Iterate sorted itemsets
+  for (const set of itemsets) {
+    const genres = set.items;     // e.g. [1, 46]
 
-        // Fetch ALL anime that match this combination
-        const animeList = await fetchAllAnimeByGenres(genres);
+    // Fetch ALL anime that match this combination
+    const animeList = await fetchAllAnimeByGenres(genres);
 
-        let addedCount = 0;
+    let addedCount = 0;
 
-        for (const anime of animeList) {
-            if (addedCount >= 5) break;
+    for (const anime of animeList) {
+      if (addedCount >= 5) break;
 
-            const malId = anime.mal_id;
+      const malId = anime.mal_id;
 
-            if (!watchedAndRecommended.has(malId)) {
-                watchedAndRecommended.add(malId);
-                recommended.add(malId);
-                addedCount++;
+      if (!watchedAndRecommended.has(malId)) {
+        watchedAndRecommended.add(malId);
+        recommended.add(malId);
+        addedCount++;
 
-                // Stop EVERYTHING once we reach 20
-                if (recommended.size >= 25) {
-                    return [...recommended];
-                }
-            }
+        // Stop EVERYTHING once we reach 25
+        if (recommended.size >= 25) {
+          return [...recommended];
         }
+      }
     }
+  }
 
-    return [...recommended];
+  return [...recommended];
 }
 
 export async function POST(request) {
-    const watched = await request.json();
-    console.log("Watched", watched)
-    const recc = await recommendAnime(watched)
-    return Response.json({message: recc, error: false, success: true});
+  const watched = await request.json();
+  console.log("Watched", watched)
+  const recc = await recommendAnime(watched)
+  let recommendedInfoes = [];
+  for (const id of recc) {
+    let req = await fetch(`https://api.jikan.moe/v4/anime/${id}`)
+    let reqJson = await req.json()
+    while(!("data" in reqJson)){
+      req = await fetch(`https://api.jikan.moe/v4/anime/${id}`)
+      reqJson = await req.json()
+    }
+    recommendedInfoes.push(reqJson['data'])
+    // await new Promise(resolve => setTimeout(resolve, 600))
+  }
+  return Response.json({ message: recommendedInfoes, error: false, success: true });
 }

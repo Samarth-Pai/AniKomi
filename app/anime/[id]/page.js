@@ -51,8 +51,10 @@ const Anime = ({ params }) => {
             setRelationships(relations);
             await sleep(1500)
 
-            const reviewReq = await fetch("/api/aireview?" + new URLSearchParams({ title: animeJson['data']['title_english'] || animeJson['data']['title'] , id}))
-            const reviewJson = await reviewReq.json()
+            let reviewReq = await fetch("/api/aireview?" + new URLSearchParams({ title: animeJson['data']['title_english'] || animeJson['data']['title'] , id}))
+            while(reviewReq.status != 200)
+                reviewReq = await fetch("/api/aireview?" + new URLSearchParams({ title: animeJson['data']['title_english'] || animeJson['data']['title'] , id}))
+            let reviewJson = await reviewReq.json()
             setReview(reviewJson['message'])
         }
         getData()
