@@ -127,7 +127,8 @@ export async function recommendAnime(watched) {
   // Step 4: Setup sets
   console.log("These are watched", watched)
   const watchedAndRecommended = new Set(Object.keys(watched).map(Number));
-  const recommended = new Set();
+  const recommendedIds = new Set();
+  const recommendedDetails = [];
 
 
   // Step 5: Iterate sorted itemsets
@@ -140,43 +141,31 @@ export async function recommendAnime(watched) {
     let addedCount = 0;
 
     for (const anime of animeList) {
-      if (addedCount >= 7) break;
+      if (addedCount >= 5) break;
 
       const malId = anime.mal_id;
 
       if (!watchedAndRecommended.has(malId)) {
         watchedAndRecommended.add(malId);
-        recommended.add(malId);
+        recommendedIds.add(malId);
+        recommendedDetails.push(anime);
         addedCount++;
 
         // Stop EVERYTHING once we reach 25
-        if (recommended.size >= 28) {
-          return [...recommended];
+        if (recommendedDetails.length >= 25) {
+          return recommendedDetails;
         }
       }
     }
   }
 
-  return [...recommended];
+  return recommendedDetails;
 }
 
 export async function POST(request) {
   const watched = await request.json();
   console.log("Watched", watched)
   const recc = await recommendAnime(watched)
-  let recommendedInfoes = [];
-  for (const id of recc) {
-    let req = await fetch(`https://api.jikan.moe/v4/anime/${id}`)
-    let reqJson = await req.json()
-    // while(!("data" in reqJson)){
-    //   req = await fetch(`https://api.jikan.moe/v4/anime/${id}`)
-    //   reqJson = await req.json()
-    // }
-    if('data' in reqJson)
-      recommendedInfoes.push(reqJson['data'])
-    await new Promise(resolve => setTimeout(resolve, 500))
-  }
-  // console.log("Recommended infoes", recommendedInfoes)
-  console.log("Recommended length", recommendedInfoes.length)
-  return Response.json({ message: recommendedInfoes, error: false, success: true });
+  console.log("Recommended length", recc.length)
+  return Response.json({ message: recc, error: false, success: true });
 }
