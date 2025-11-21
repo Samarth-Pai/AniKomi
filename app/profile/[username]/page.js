@@ -137,7 +137,7 @@ const Profile = ({ params }) => {
       {recommendations.length == 0 && <div className='text-xl italic m-2'>
           Loading... Please wait for few seconds...
         </div>}
-      <div className='cards flex flex-wrap gap-3 z-0 relative mx-3 md:mx-10 justify-center mb-10'>
+      <div className='cards flex flex-wrap gap-3 z-0 relative mx-1 md:mx-10 justify-center mb-10'>
           
           {recommendations && recommendations.length && recommendations.map((item, ind) => {
             return <div key={ind} className="group border border-white/50 shadow-black rounded-xl p-3 w-40 md:w-60 cursor-pointer bg-black/50 backdrop-blur-2xl hover:border-4 hover:w-45 hover:md:w-65 hover:p-5 hover:bg-gradient-to-tr hover:from-blue-800/50 hover:to-yellow-800/50 transition-all" onClick={() => router.push(`/anime/${item['mal_id']}`)}>
