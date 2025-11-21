@@ -2,11 +2,12 @@ import React from 'react'
 import { useRouter } from 'next/navigation'
 const capitalizeString = (s) => s[0].toUpperCase() + s.slice(1, s.length)
 
-const Hero = () => {
+const Hero = (props) => {
   const router = useRouter()
   const today = new Date()
   const currentYear = today.getFullYear()
   const currentMonth = today.getMonth()
+  const { authenticated, recommendationMode, setRecommendationMode } = props;
   let seasonsToBeDisplayed = []
   if([1, 2, 3].includes(currentMonth)){
     seasonsToBeDisplayed = [["fall", currentYear-1], ["winter", currentYear], ["spring", currentYear]]
@@ -32,6 +33,14 @@ const Hero = () => {
             </button>
           })}
         </div>
+        {authenticated ? <div>
+          {recommendationMode ? <button className='p-3 border text-gray-500 border-white/50 bg-black/50 rounded-xl backdrop-blur-sm cursor-pointer'>
+              Get recommendations
+          </button> : <button className='p-3 border border-white/50 bg-black/50 rounded-xl backdrop-blur-sm cursor-pointer hover:p-4 hover:border-4 hover:bg-gradient-to-tr hover:from-blue-800/50 hover:to-yellow-800/50 transition-all' onClick={() => setRecommendationMode(true)}>
+              Get recommendations
+          </button>
+          }
+        </div> :<></>}
     </div>
   )
 }

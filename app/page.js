@@ -4,10 +4,11 @@ import Hero from "@/components/Hero";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
+import { useSession } from 'next-auth/react'
 
 const refetch = async (url) => {
   let req = await fetch(url)
-  while(req.status != 200)
+  while (req.status != 200)
     req = await fetch(url)
   return req
 }
@@ -25,6 +26,9 @@ export default function Home() {
   const [showSeasons, setShowSeasons] = useState(false)
   const [showThemes, setShowThemes] = useState(false)
   const [showDemographics, setShowDemographics] = useState(false)
+  const [recommendationMode, setRecommendationMode] = useState(false);
+  const [recommendations, setRecommendations] = useState([])
+  const session = useSession();
 
   useEffect(() => {
     const getData = async () => {
@@ -32,7 +36,7 @@ export default function Home() {
       let themesJson = await themesReq.json()
       setThemes(themesJson['data'])
     }
-    if(showThemes)
+    if (showThemes)
       getData()
   }, [showThemes])
 
@@ -42,7 +46,7 @@ export default function Home() {
       let genresJson = await genresReq.json()
       setGenres(genresJson['data'])
     }
-    if(showGenres)
+    if (showGenres)
       getData()
   }, [showGenres])
 
@@ -53,7 +57,7 @@ export default function Home() {
       console.log(setDemographics)
       setDemographics(demographicsJson['data'])
     }
-    if(showDemographics)
+    if (showDemographics)
       getData()
   }, [showDemographics])
 
@@ -85,14 +89,85 @@ export default function Home() {
     getTopAiring()
   }, [])
 
+  useEffect(() => {
+    const getData = async () => {
+
+      const myHeaders = new Headers();
+      console.log("Sessin from", session.data)
+      myHeaders.append("email", session.data.user.email);
+
+      const requestOptions = {
+        method: "GET",
+        headers: myHeaders,
+        redirect: "follow"
+      };
+
+      const userReq = await fetch("/api/getUser", requestOptions)
+      const user = await userReq.json();
+      console.log("User was", user)
+
+      const myHeaders2 = new Headers();
+      myHeaders2.append("username", user.username);
+
+      const requestOptions2 = {
+        method: "GET",
+        headers: myHeaders2,
+        redirect: "follow"
+      };
+
+      const watchedReq = await fetch("/api/watchedAnimes/", requestOptions2);
+      const watchedJson = await watchedReq.json();
+
+      let watchedList = {};
+      for (const item of watchedJson) {
+        watchedList[item?.mal_id.toString()] = item.genres
+      }
+      const reccReq = await fetch('/api/apriori', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(watchedList),
+      });
+      const reccJson = await reccReq.json();
+      const recommendedInfoes = reccJson.message;
+      console.log("These will be recc", recommendedInfoes)
+      setRecommendations(recommendedInfoes)
+
+    }
+    if (session.status == "authenticated" && recommendationMode)
+      getData()
+  }, [recommendationMode, session])
+
+
   const router = useRouter();
 
 
   return (
     <>
-      <Hero />
+      <Hero authenticated={session.status == "authenticated"} recommendationMode={recommendationMode} setRecommendationMode={setRecommendationMode} />
       {/* <Carousel/> */}
       <div className="px-3 md:px-12">
+        {recommendationMode && <>
+          <span className='text-2xl font-semibold m-2'>
+            Recommendations
+          </span>
+          {recommendations.length == 0 && <div className='text-xl italic m-2'>
+            Loading... Please wait for few seconds...
+          </div>}
+          <div className='cards flex flex-wrap gap-3 z-0 relative my-5 mx-3 md:mx-10 justify-center mb-10'>
+
+            {recommendations && recommendations.length && recommendations.map((item, ind) => {
+              return <div key={ind} className="group border border-white/50 shadow-black rounded-xl p-3 w-40 md:w-60 cursor-pointer bg-black/50 backdrop-blur-2xl hover:border-4 hover:w-45 hover:md:w-65 hover:p-5 hover:bg-gradient-to-tr hover:from-blue-800/50 hover:to-yellow-800/50 transition-all" onClick={() => router.push(`/anime/${item['mal_id']}`)}>
+                <div className="h-50 md:h-85 rounded-xl overflow-hidden relative group:border-1">
+                  <img src={item['images']['webp']['image_url']} className="h-full object-cover" />
+                  <span className="absolute bottom-0 right-1 text-xl font-extrabold text-shadow-md text-shadow-amber-950">{item['score']}</span>
+                </div>
+                <div>{item['title_english'] ? item['title_english'] : item['title']}</div>
+              </div>
+            })}
+          </div>
+        </>}
         <h1 className="text-2xl font-semibold">Top Airing</h1>
         <div className="flex gap-3 flex-wrap my-5 justify-center">
           {topAiring && topAiring.length && topAiring.map((item, ind) => {
